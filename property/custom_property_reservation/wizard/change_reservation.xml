@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="change_reservation_form_view_wizard_id">
+        <field name="name">Change Reservation</field>
+        <field name="model">change.reservation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Reservation">
+                <group string="Change Reservation">
+                    
+                    <group>
+                        <field name="reservation_type"/>
+                       
+                    </group>
+                 
+
+                </group>
+                <footer>
+                    <button string="Save" name="action_change_reservation" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="change_reservation_wizard_action_id" model="ir.actions.act_window">
+        <field name="name">Change Reservation</field>
+        <field name="res_model">change.reservation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

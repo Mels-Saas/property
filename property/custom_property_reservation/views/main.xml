@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="property_reservation_history_view_form_custom" model="ir.ui.view">
+        <field name="name">property.reservation.form.inherit</field>
+        <field name="model">property.reservation</field>
+        <field name="inherit_id" ref="ahadubit_property_reservation.property_reservation_history_view_form_id"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <button name="change_reservation"
+                        string="Reservation"
+                        type="object"
+                        class="btn-primary"
+                    invisible="status not in ['reserved']"   
+                    />
+            </xpath>
+        </field>
+    </record>
+</odoo>
