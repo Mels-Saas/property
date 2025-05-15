@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -22,4 +19,5 @@ jobs:
           script: |
             cd /opt/custom_modules
             git pull origin main
-            # Any other deployment commands (e.g., restart service)
+            # Optional: Restart your app
+            # sudo systemctl restart your-service
