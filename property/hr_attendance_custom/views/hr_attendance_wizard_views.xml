@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_attendance_wizard_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.wizard.tree</field>
+        <field name="model">hr.attendance.wizard</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="department_ids"/>
+                <field name="employee_ids"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_wizard_line_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.wizard.line.tree</field>
+        <field name="model">hr.attendance.wizard.line</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="0">
+                <field name="employee_id"/>
+                <field name="day_name"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="worked_hours" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_wizard_form" model="ir.ui.view">
+         <field name="name">hr.attendance.wizard.form</field>
+         <field name="model">hr.attendance.wizard</field>
+         <field name="arch" type="xml">
+            <form string="Generate Attendance">
+            <header>
+             <field name="attendance_generated" invisible="1" />
+                <button name="generate_draft_attendance" type="object" string="Save Draft" class="oe_highlight" context="{}" />
+                <button name="create_attendance_records" type="object" string="Generate Attendance" class="oe_highlight" context="{}" />
+               
+            </header>
+            <sheet>
+            
+           
+                <group>
+                    <group>
+                        <field name="project_ids" widget="many2many_tags"/>
+                        <field name="department_ids" widget="many2many_tags" options="{'no_quick_create': True, 'no_create_edit': True}"/>
+                        <field name="employee_ids" widget="many2many_tags"/>
+
+                    </group>
+                    <group>
+                        <label for="date_from" string="Attendance Period"/>
+                            <div>
+                                <field name="date_from" class="oe_inline" />
+                                -
+                                <field name="date_to" class="oe_inline" nolabel="1"/>
+                            </div>
+                         <field name="location_ids" widget="many2many_tags"/>
+
+                    </group>
+                </group>
+                <group></group>
+                    <field name="attendance_lines" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="employee_id"/>
+                            <field name="day_name"/>
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="worked_hours" />
+                        </tree>
+                    </field>
+                 </sheet>
+            </form>
+         </field>
+    </record>
+
+    <record id="action_hr_attendance_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Attendance</field>
+        <field name="res_model">hr.attendance.wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="action_hr_attendance_wizard_line" model="ir.actions.act_window">
+        <field name="name">Attendance Wizard Lines</field>
+        <field name="res_model">hr.attendance.wizard.line</field>
+        <field name="view_mode">tree</field>
+        <field name="target">current</field>
+        <field name="context">{'group_by': ['employee_id']}</field>
+    </record>
+
+    <menuitem id="menu_hr_attendance_allocate"
+              sequence="2"
+              name="Allocate"
+              parent="hr_attendance.menu_hr_attendance_root"/>
+
+    <!-- Menu Items with New Parent -->
+    <menuitem id="menu_hr_attendance_wizard"
+              sequence="1"
+              name="Allocate Attendance"
+              parent="menu_hr_attendance_allocate"
+              action="action_hr_attendance_wizard"/>
+
+    <menuitem id="menu_hr_attendance_wizard_line"
+              sequence="2"
+              name="Attendances"
+              parent="menu_hr_attendance_allocate"
+              action="action_hr_attendance_wizard_line"/>
+</odoo>

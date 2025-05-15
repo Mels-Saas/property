@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hr_attendance_approve" model="ir.actions.server">
+        <field name="name">Approve Attendance</field>
+        <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="binding_model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="binding_view_types">tree</field>
+        <field name="groups_id" eval="[(4, ref('hr.group_hr_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_approve_attendance_1()
+        </field>
+    </record>
+
+    <record id="view_attendance_tree_inheritted" model="ir.ui.view">
+        <field name="name">hr.attendance.view.tree.inherited</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="status"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='company_id']" position="replace">
+                <field name="project_id"/>
+            </xpath>
+
+
+        </field>
+    </record>
+
+    <record id="view_attendance_approval_wizard_form" model="ir.ui.view">
+        <field name="name">hr.attendance.approval.wizard.form</field>
+        <field name="model">hr.attendance.approval.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Approve Attendances">
+                <group>
+                    <field name="employee_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <button string="Fetch Attendances" type="object" name="action_fetch_attendances" class="btn-primary"/>
+                </group>
+                <field name="show_attendances" invisible="1"/>
+                <group attrs="{'invisible':[('show_attendances','=',False)]}">
+                    <field name="attendance_ids" readonly="0">
+                        <tree editable="bottom">
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="worked_hours"/>
+                            <field name="is_approved"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer attrs="{'invisible':[('show_attendances','=',False)]}">
+                    <button string="Approve All" type="object" name="action_approve_attendances" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attendance_approval_wizard" model="ir.actions.act_window">
+        <field name="name">Approve Attendances</field>
+        <field name="res_model">hr.attendance.approval.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
