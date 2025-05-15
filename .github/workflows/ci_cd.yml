@@ -20,4 +20,4 @@ jobs:
             cd /opt/custom_modules
             git pull origin main
             # Optional: Restart your app
-            # sudo systemctl restart your-service
+            sudo systemctl restart odoo17
