@@ -1,0 +1,65 @@
+name: Deploy Odoo Modules to Server
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Set up SSH key for secure communication
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SERVER_IP }}
+
+      # Add server to known_hosts
+      - name: Add Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      # Deploy changes to the server
+      - name: Deploy to Server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Navigate to the target directory
+            cd /opt/custom_modules
+
+            # Initialize git if not already a repository
+            if [ ! -d .git ]; then
+              git init
+              git remote add origin git@github.com:${{ github.repository }}.git
+              git fetch origin
+              git checkout main
+            fi
+
+            # Pull the latest changes
+            git pull origin main
+
+            # Fix permissions
+            chown -R root:root /opt/custom_modules
+            chmod -R 755 /opt/custom_modules
+          EOF
+
+      # Restart Odoo service
+      - name: Restart Odoo Service
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Restart the Odoo service
+            systemctl restart ${{ secrets.ODOO_SERVICE }}
+            
+            # Verify the service is running
+            if systemctl is-active --quiet ${{ secrets.ODOO_SERVICE }}; then
+              echo "Odoo service restarted successfully."
+            else
+              echo "Failed to restart Odoo service."
+              exit 1
+            fi
+          EOF
