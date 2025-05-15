@@ -28,38 +28,47 @@ jobs:
       # Deploy changes to the server
       - name: Deploy to Server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             # Navigate to the target directory
             cd /opt/custom_modules
 
-            # Initialize git if not already a repository
-            if [ ! -d .git ]; then
-              git init
-              git remote add origin git@github.com:${{ github.repository }}.git
-              git fetch origin
-              git checkout main
-            fi
+            # Remove existing .git to avoid conflicts
+            rm -rf .git
+
+            # Initialize new git repository
+            git init
+            git remote add origin git@github.com:${{ github.repository }}.git
+
+            # Fetch and checkout the main branch
+            git fetch origin
+            git checkout main
 
             # Pull the latest changes
-            git pull origin main
+            if ! git pull origin main; then
+              echo "Failed to pull changes"
+              exit 1
+            fi
 
             # Fix permissions
             chown -R root:root /opt/custom_modules
             chmod -R 755 /opt/custom_modules
           EOF
 
-      # Restart Odoo service
+      # Restart Odoo Service
       - name: Restart Odoo Service
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             # Restart the Odoo service
-            systemctl restart ${{ secrets.ODOO_SERVICE }}
-            
+            if ! systemctl restart ${{ secrets.ODOO_SERVICE }}; then
+              echo "Failed to restart Odoo service"
+              exit 1
+            fi
+
             # Verify the service is running
             if systemctl is-active --quiet ${{ secrets.ODOO_SERVICE }}; then
               echo "Odoo service restarted successfully."
             else
-              echo "Failed to restart Odoo service."
+              echo "Odoo service is not running"
               exit 1
             fi
           EOF
