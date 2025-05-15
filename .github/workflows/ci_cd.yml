@@ -32,6 +32,9 @@ jobs:
             # Navigate to the target directory
             cd /opt/custom_modules
 
+            # Debugging: Check SSH access to GitHub
+            ssh -T git@github.com || { echo "SSH to GitHub failed"; exit 1; }
+
             # Remove existing .git to avoid conflicts
             rm -rf .git
 
@@ -39,12 +42,21 @@ jobs:
             git init
             git remote add origin git@github.com:${{ github.repository }}.git
 
+            # Debugging: Verify remote
+            git remote -v
+
             # Fetch and checkout the main branch
-            git fetch origin
-            git checkout main
+            if ! git fetch origin; then
+              echo "Failed to fetch from origin"
+              exit 1
+            fi
+            if ! git checkout main; then
+              echo "Failed to checkout main branch"
+              exit 1
+            fi
 
             # Pull the latest changes
-            if ! git pull origin main; then
+            if ! git pull origin main --verbose; then
               echo "Failed to pull changes"
               exit 1
             fi
