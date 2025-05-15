@@ -36,6 +36,8 @@
         'data/crm_stage_data.xml',
         'data/expire_lead_cron.xml',
 
+        #"test"
+
                #report
         'report/crm_lead_log_report.xml'
 
