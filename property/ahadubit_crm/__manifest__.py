@@ -31,7 +31,6 @@
         'views/base_activity_inherited_view.xml',
         'views/my_activities.xml',
 
-
         #data
         'data/crm_activity_data.xml',
         'data/crm_stage_data.xml',
