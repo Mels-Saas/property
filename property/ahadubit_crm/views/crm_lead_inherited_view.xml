@@ -16,6 +16,9 @@
             <field name="inherit_id" ref="crm.crm_lead_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='team_id']" position="after">
+                    <field name="is_reserved" invisible="1"/>
+                    <field name="is_lost" invisible="1"/>
+                    <field name="is_expire_stage" invisible="1"/>
                     <field name="site_ids" widget="many2many_tags" readonly="is_reserved == True or is_lost == True or is_expire_stage == True"/>
                     <field name="customer_name" invisible="type == 'lead'" readonly="is_reserved == True or is_lost == True or is_expire_stage == True"/>
                 </xpath>
