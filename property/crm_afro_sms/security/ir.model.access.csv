@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sms_wizard_afro,CRM Lead SMS WIZARD,model_lead_sms_wizard,base.group_user,1,1,1,1
+access_sms_bulk_afro,CRM Lead SMS bulk,model_bulk_lead_sms,base.group_user,1,1,1,1
