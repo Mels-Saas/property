@@ -38,9 +38,7 @@
                                 </div>
                                 <div class="text-center mb-3">
                                     <p class="h5 text-dark fw-bold fs-3">
-                                        <a class="clickable" t-att-data-type="'totalProperties'" t-on-click="openRecords">
                                             <span t-esc="state.property_data.total"/>
-                                        </a>
                                     </p>
                                 </div>
                                 <div class="w-100" style="min-height: 200px;">
@@ -49,6 +47,8 @@
                                         title="'Property Status'" 
                                         data="state.property_data" 
                                         key="state.renderKey" 
+                                        start_date="state.start_date"
+                                        end_date="state.end_date"
                                         env="env" 
                                         onChartClick="onChartClick"/>
                                 </div>
@@ -61,9 +61,7 @@
                                 </div>
                                 <div class="text-center mb-3">
                                     <p class="h5 text-dark fw-bold fs-3">
-                                        <a class="clickable" t-att-data-type="'soldProperties'" t-on-click="openRecords">
                                             <span t-esc="state.sold_properties"/>
-                                        </a>
                                     </p>
                                 </div>
                                 <div class="w-100" style="min-height: 200px;">
@@ -71,6 +69,8 @@
                                         type="'bar'" 
                                         title="'Sold Properties'" 
                                         data="state.sold_properties_data" 
+                                        start_date="state.start_date"
+                                        end_date="state.end_date"
                                         key="state.renderKey" 
                                         env="env" 
                                         onChartClick="onChartClick"/>
@@ -104,7 +104,7 @@
                                 <div class="w-100" style="min-height: 200px;">
                                     <ChartRenderer 
                                         type="'pie'" 
-                                        title="'Commission Breakdown'" 
+                                        title="'Commission'" 
                                         data="state.commission_data" 
                                         key="state.renderKey" 
                                         env="env"

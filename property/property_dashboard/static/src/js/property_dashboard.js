@@ -77,50 +77,7 @@ export class OwlPropertyDashboard extends Component {
         console.log("Property Data:", propertyData); // Debug log
 
         // Sites Data (Bar Chart: Properties per Site)
-        let siteData = { labels: [], datasets: [], total: 0 };
-        try {
-            const sites = await this.orm.searchRead("property.site", [], ["id", "name"]);
-            console.log("####################### all site", sites);
-            const propertiesBySite = await this.orm.readGroup(
-                "property.property",
-                domain,
-                ["site:count"],
-                ["site"]
-            );
-            console.log("############ property by site", propertiesBySite);
-
-            const siteMap = new Map(sites.map(site => [site.id, site.name]));
-            console.log("############### sitemap", siteMap);
-            const siteNames = sites.map(site => site.name);
-            console.log("############# sitmap value", siteNames);
-
-            const siteCounts = sites.map(site => {
-                const siteProp = propertiesBySite.find(
-                    prop => prop.site_id && prop.site_id[0] === site.id
-                );
-                console.log("testing ############################", siteProp);
-
-                return {
-                    site_name: site.name || "Unknown",
-                    count: siteProp ? siteProp.site_id_count : 0,
-                };
-            });
         
-
-            siteData = {
-                labels: siteCounts.map(s => s.site_name),
-                datasets: siteCounts.some(s => s.count >= 0) ? [{
-                    label: "Properties",
-                    data: siteCounts.map(s => s.count),
-                    backgroundColor: "#4BC0C0",
-                    barThickness: 40,
-                }] : [],
-                total: siteCounts.reduce((sum, s) => sum + s.count, 0),
-            };
-        } catch (error) {
-            console.error("Error fetching site data:", error);
-        }
-        console.log("Site Data:", siteData); // Debug log
 
         // Sold Properties Data (Bar Chart: Sold Properties by State)
        // Sold Properties Data (Bar Chart: Sold Properties by State)
@@ -221,7 +178,6 @@ export class OwlPropertyDashboard extends Component {
         console.log("Commission Data:", commissionData); // Debug log
 
         // Update state
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ############################", siteData.labels.length);
 
         Object.assign(this.state, {
             property_data: propertyData,
@@ -232,17 +188,32 @@ export class OwlPropertyDashboard extends Component {
         });
     }
 
-    async onChartClick({ chartType, label, title }) {
-        const { start_date, end_date } = this.state;
+    async onChartClick({ chartType, label, title,st,ed }) {
+
+        console.log("######################### this #########",this)
+        console.log(st)
+        console.log(ed)
+        const { start_date, end_date } = this;
         let domain = [
             ["create_date", ">=", start_date],
             ["create_date", "<=", end_date],
         ];
 
         if (chartType === "bar" && title === "Property Status") {
-            const statusMap = { Available: "available", Reserved: "reserved", Sold: "sold" };
-            if (statusMap[label]) {
-                domain.push(["state", "=", statusMap[label]]);
+            const statusMap = {
+                "available": "Available",
+                "reserved": "Reserved",
+                "sold": "Sold",
+                "rented": "Rented",
+                "pending_sales": "Pending Sales",
+            };
+        
+            const key = Object.keys(statusMap).find(key => statusMap[key] === label);
+            console.log("############ label ", label);
+            console.log("################## key ", key);
+        
+            if (key) {
+                domain.push(["state", "=", key]);
                 this.env.services.action.doAction({
                     type: "ir.actions.act_window",
                     name: `Properties - ${label}`,
@@ -251,12 +222,22 @@ export class OwlPropertyDashboard extends Component {
                     domain: domain,
                     target: "current",
                 });
+            } else {
+                console.warn("Label not found in statusMap:", label);
             }
-        
-        } else if (chartType === "bar" && title === "Sold Properties") {
-            const stateMap = { "draft": "draft", "sent": "sent", "sale": "sale", "done": "done", "cancel": "cancel" };
-            if (stateMap[label]) {
-                domain.push(["state", "=", stateMap[label]]);
+        }
+        else if (chartType === "bar" && title === "Sold Properties") {
+            console.log("################# testing 123")
+            const stateMap = {
+                "draft": "Ongoing",
+                "request_for_confirm": "Requested For Complete",
+                "confirm": "Complete",
+                "cancel": "Cancel",
+            };
+            const key = Object.keys(stateMap).find(key => stateMap[key] === label);
+           
+                domain.push(["state", "=", key])
+                console.log("##############################label",key)
                 this.env.services.action.doAction({
                     type: "ir.actions.act_window",
                     name: `Sold Properties - ${label}`,
@@ -265,25 +246,26 @@ export class OwlPropertyDashboard extends Component {
                     domain: domain,
                     target: "current",
                 });
-            }
+            // }
         }
     }
 
     async openRecords(ev) {
-        const type = ev.target.dataset.type;
-        if (!type) return;
+        console.log("######################### 123",this)
+        const type = this.props.action.name
 
         const { start_date, end_date } = this.state;
         let domain = [
             ["create_date", ">=", start_date],
             ["create_date", "<=", end_date],
         ];
+        console.log("####################### open record ",type)
 
-        if (type === "totalProperties") {
+        if (type === "Property Dashboard") {
             this.env.services.action.doAction({
                 type: "ir.actions.act_window",
                 name: "Total Properties",
-                res_model: "property.property",
+                res_model: "property.site",
                 views: [[false, "list"], [false, "form"]],
                 domain: domain,
                 target: "current",
@@ -292,7 +274,7 @@ export class OwlPropertyDashboard extends Component {
             this.env.services.action.doAction({
                 type: "ir.actions.act_window",
                 name: "Sold Properties",
-                res_model: "property.sale",
+                res_model: "property.Property",
                 views: [[false, "list"], [false, "form"]],
                 domain: domain,
                 target: "current",
