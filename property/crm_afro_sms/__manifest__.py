@@ -6,7 +6,8 @@
     "data":[
         "security/ir.model.access.csv",
         'views/crm_leads.xml',
-        "wizard/lead_sms.xml"
+        "wizard/lead_sms.xml",
+        "wizard/lead_sms_bulk.xml"
 
     ]
 }
