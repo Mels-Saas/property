@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cmr_lead_inherit_crm_afro" model="ir.ui.view">
+        <field name="name">crm.lead.view.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm_sms.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(crm_sms.crm_lead_act_window_sms_composer_multi)d']" position="replace">
+                <button name="send_sms" type="object" string="SMS" icon="fa-comments"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
