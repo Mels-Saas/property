@@ -150,11 +150,7 @@ class PropertySale(models.Model):
         for rec in self:
             rec.total_paid = sum(line.paid_amount for line in rec.payment_installment_line_ids)
     
-    @api.depends('payment_commission_line_ids')
-    def compute_total_paid(self):
-        for rec in self:
-            rec.total_paid = sum(line.paid_amount for line in rec.payment_commission_line_ids)
-
+   
 
     @api.depends('total_paid','payment_based_discount','discount')
     def compute_remaining(self):
