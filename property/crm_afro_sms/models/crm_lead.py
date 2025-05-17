@@ -14,6 +14,6 @@ class CRMLead(models.Model):
         'target': 'new',
         'context': {
             'default_partner_id': self.partner_id.id,
-            'default_phone_no': self.phone,
+            
         }
     }

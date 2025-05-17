@@ -5,7 +5,7 @@ class LeadSMSWizard(models.TransientModel):
     _description = 'Lead SMS Wizard'
 
     partner_id = fields.Many2one('res.partner', string='Contact', required=True)
-    phone_no = fields.Char(string='Phone Number', required=True)
+    phone_no = fields.Char(string='Phone Number', related="partner_id.phone",required=True)
     message_body = fields.Text(string='Message', required=True)
 
     def action_send_sms(self):
