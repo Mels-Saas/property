@@ -588,10 +588,10 @@ class PropertyReservationHistoryInherited(models.Model):
             else:
                 self.property_id_domain = "[('state', 'in', ['available'])]"
 
-    @api.model
-    def create(self, vals):
-        res = super(PropertyReservationHistoryInherited, self).create(vals)
-        return res
+    # @api.model
+    # def create(self, vals):
+    #     res = super(PropertyReservationHistoryInherited, self).create(vals)
+    #     return res
     
     @api.model
     def write(self, vals):
