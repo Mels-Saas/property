@@ -177,19 +177,19 @@ class PropertySite(models.Model):
     city_id = fields.Many2one('property.site.city',string="City", required=True,domain="[('country_id', '=', country_id)]", tracking = True)
     sub_city_id = fields.Many2one('property.site.subcity',string="Sub City", domain="[('city_id', '=', city_id)]", required=True, tracking = True)
     wereda = fields.Char(string="Woreda", required=True, tracking = True)
-    house_no = fields.Char(string="House No")
+    # house_no = fields.Char(string="House No")
     area = fields.Char(string="Area name")
     phone = fields.Char(string="Telephone Number", required=True)
     email = fields.Char(string="Email Address")
-    lessee_name = fields.Char(string="Lessee's Full name", required=True,tracking = True )
-    leasehold_certificate = fields.Binary(string="Leasehold Certificate", required=True)
-    title_deed_no = fields.Char(string="Title deed no")
+    # lessee_name = fields.Char(string="Lessee's Full name", required=True,tracking = True )
+    # leasehold_certificate = fields.Binary(string="Leasehold Certificate", required=True)
+    # title_deed_no = fields.Char(string="Title deed no")
     plot_area = fields.Float(string="Plot area(m2)", required=True,tracking = True)
     site_type = fields.Many2one('property.site.type',required=True, string="Site Type")
     floor_structure = fields.Char(string="Floor Structure")
     car_parking = fields.Integer(string="Car Parking Floor", required=True)
-    commercial_certificate = fields.Binary(string="Commercial Registration Certificate", required=True)
-    taxpayer_certificate = fields.Binary(string="Taxpayer Registration Certificate", required=True)
+    # commercial_certificate = fields.Binary(string="Commercial Registration Certificate", required=True)
+    # taxpayer_certificate = fields.Binary(string="Taxpayer Registration Certificate", required=True)
     # allowed_reservation_days = fields.Integer(string="Allowed Reservation Days")
     payment_structure = fields.Char(string="Payment Structure")
     payment_structure_id = fields.Many2one('property.payment.term',string="Payment Structure")
@@ -260,20 +260,20 @@ class PropertySite(models.Model):
     def _onchange_city_id(self):
         self.city_id = False
 
-    @api.onchange('leasehold_certificate')
-    def compute_visible_image(self):
-        for rec in self:
-            if rec.leasehold_certificate:
-                attachment = self.env['ir.attachment'].create({
-                    'name': 'Leasehold Certificate',
-                    'type': 'binary',
-                    'datas': rec.taxpayer_certificate,
-                    'res_model':'property.site',
-                    'res_id': rec.id,
-                })
-                rec.message_main_attachment_id=attachment.id
-            else:
-                rec.message_main_attachment_id=False
+    # @api.onchange('leasehold_certificate')
+    # def compute_visible_image(self):
+    #     for rec in self:
+    #         if rec.leasehold_certificate:
+    #             attachment = self.env['ir.attachment'].create({
+    #                 'name': 'Leasehold Certificate',
+    #                 'type': 'binary',
+    #                 'datas': rec.taxpayer_certificate,
+    #                 'res_model':'property.site',
+    #                 'res_id': rec.id,
+    #             })
+    #             rec.message_main_attachment_id=attachment.id
+    #         else:
+    #             rec.message_main_attachment_id=False
 
 
 

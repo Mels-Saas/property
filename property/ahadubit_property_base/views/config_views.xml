@@ -308,13 +308,13 @@
                             <field name="sub_city_id" no_create="1"
                                 domain="[('city_id', '=', city_id)]" />
                             <field name="wereda" />
-                            <field name="house_no" />
+                            <!-- <field name="house_no" /> -->
                             <field name="area" />
                             <field name="latitude" />
                             <field name="longitude" />
                             <field name="phone" widget="phone" />
                             <field name="email" />
-                            <field name="lessee_name" />
+                            <!-- <field name="lessee_name" /> -->
                              <field name="property_status" />
 
                         </group>
@@ -323,12 +323,12 @@
                             <field name="site_type" />
                             <field name="plot_area" />
                             <field name="car_parking" />
-                            <field name="title_deed_no" />
+                            <!-- <field name="title_deed_no" /> -->
                             <field name="payment_structure_id" invisible="is_multi == True" />
                             <field name="price_per_m2" invisible="is_multi == True" />
-                            <field name="leasehold_certificate" widget="binary_preview" />
-                            <field name="commercial_certificate" widget="binary_preview" />
-                            <field name="taxpayer_certificate" widget="binary_preview" />
+                            <!-- <field name="leasehold_certificate" widget="binary_preview" /> -->
+                            <!-- <field name="commercial_certificate" widget="binary_preview" />
+                            <field name="taxpayer_certificate" widget="binary_preview" /> -->
                             <field name="is_multi" invisible="1" />
                         </group>
                     </group>
