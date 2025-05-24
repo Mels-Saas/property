@@ -33,8 +33,8 @@ class PropertySale(models.Model):
         due_date = nearest_line.expected_date
         alert_date = due_date - timedelta(days=config.days_before)
 
-        if today < alert_date:
-            raise UserError("It's not yet time to send SMS for the nearest due date.")
+        # if today < alert_date:
+        #     raise UserError("It's not yet time to send SMS for the nearest due date.")
 
         # Prepare recipients
         recipients = set()
