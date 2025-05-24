@@ -34,19 +34,36 @@
             <form position="attributes">
                 <attribute name="create">false</attribute>
             </form>
+            
             <xpath expr="//header" position="inside">
                 <field name='is_verified' invisible="1" />
+                <button type="object"
+                        name="action_view_adjustment_history"
+                        class="oe_stat_button"
+                        icon="fa-history"
+                        string="Adjustment History"
+                        >
+                    <field name="adjustment_history_count" widget="statinfo"/>
+                </button>
+                
                 <button name="request_for_confirmation_action"
                         string="Request for Confirmation"
                         type="object"
                         class="btn-primary"
-                        invisible="state not in ['draft'] or is_verified != True"
+                        invisible="state not in ['draft'] or is_verified != True or total_paid != sale_price"
                         confirm="Are you sure you want request confirmation?" />
 
                 <button name="action_cancel_sale"
                         string="Cancel"
                         type="object"
                         invisible="state in ['cancel','confirm']"/>
+                <button name="action_open_adjustment_wizard"
+                        string="Adjust Sale Value"
+                        type="object"
+                        class="btn-primary"
+                        groups="advanced_property_management.group_property_manager"
+                        invisible="state == 'confirm'"/>
+
             </xpath>
 
              <xpath expr="//button[@name='action_confirm']" position="attributes">

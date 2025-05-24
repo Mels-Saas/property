@@ -91,7 +91,44 @@ class PropertySale(models.Model):
     order_date = fields.Date(string="Order Date",
                              default=fields.date.today(),
                              help='The order date of property')
-    
+    adjustment_history_count = fields.Integer(
+        string='Adjustment History',
+        compute='_compute_adjustment_history_count',
+        store=True
+    )
+    def _compute_adjustment_history_count(self):
+        """Compute the number of adjustment history records for the smart button."""
+        for sale in self:
+            sale.adjustment_history_count = self.env['property.sale.adjustment.wizard'].search_count([
+                ('sale_id', '=', sale.id)
+            ])
+    def action_view_adjustment_history(self):
+        """View adjustment history records for this sale."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Adjustment History',
+            'res_model': 'property.sale.adjustment.wizard',
+            'view_mode': 'tree',
+            'domain': [('sale_id', '=', self.id)],
+            'context': {'create': False},
+        }
+    def action_open_adjustment_wizard(self):
+        """Open the value adjustment wizard."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Adjust Sale Value',
+            'res_model': 'property.sale.adjustment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_sale_id': self.id,
+                'default_payment_installment_line_ids': self.payment_installment_line_ids.filtered(
+                    lambda line: line.state not in ('paid', 'discounted')
+                ).ids,
+            },
+        }
     @api.depends('payment_installment_line_ids', 'payment_installment_line_ids.expected', 'payment_installment_line_ids.paid_amount', 'property_id.commision_percent')
     def _compute_payment_commission_line_ids(self):
         for sale in self:
@@ -181,6 +218,11 @@ class PropertySale(models.Model):
 
     def request_for_confirmation_action(self):
         for rec in self:
+            total_paid=0
+            for record in self.payment_installment_line_ids:
+                total_paid+=record.paid_amount
+            if total_paid<self.sale_price:
+                raise ValidationError("All Expected Payment on Current Sale Should Be Paid")
             rec.state="request_for_confirm"
 
 

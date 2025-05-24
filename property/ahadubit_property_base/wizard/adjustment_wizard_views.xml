@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_property_sale_adjustment_wizard_tree" model="ir.ui.view">
+        <field name="name">property.sale.adjustment.wizard.tree</field>
+        <field name="model">property.sale.adjustment.wizard</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Adjustment">
+                <field name="amount"/>
+                <field name="reason"/>
+                <field name="payment_installment_line_ids"/>
+                <field name="adjustment_date"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_property_sale_adjustment_wizard_form" model="ir.ui.view">
+        <field name="name">property.sale.adjustment.wizard.form</field>
+        <field name="model">property.sale.adjustment.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="amount" placeholder="Positive to increase, negative to decrease"/>
+                        <field name="reason" placeholder="Enter the reason for adjustment"/>
+                        <field name="payment_installment_line_ids"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_apply_adjustment" string="Apply Adjustment" type="object" class="btn-primary" confirm="Are You Sure to Adjust The Sale Value"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_property_sale_adjustment_wizard" model="ir.actions.act_window">
+        <field name="name">Adjustments</field>
+        <field name="res_model">property.sale.adjustment.wizard</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

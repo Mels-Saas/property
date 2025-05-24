@@ -36,7 +36,8 @@
         'views/property_reservation_config_views.xml',
         'wizard/cancellation_reason_wizard_views.xml',
         'wizard/property_sale_report_w.xml',
-        'reports/property_sale_report.xml'
+        "wizard/adjustment_wizard_views.xml",
+        'reports/property_sale_report.xml',
     ],
     "assets": {
         "web.assets_backend": [

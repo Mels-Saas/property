@@ -496,7 +496,7 @@
                     string="Add Payment"
                     type="object"
                     class="btn primary"
-                    invisible="state not in ['draft','request_for_confirm']"
+                    invisible="state not in ['draft'] or total_paid == sale_price"
                     groups="ahadubit_property_reservation.finance_team_approval_group"
 
                     />
@@ -504,7 +504,7 @@
         </xpath>
          <xpath expr="//header/button[@name='action_confirm']" position="replace">
              <button name="action_confirm" string="Confirm" type="object"
-                            class="btn primary" invisible="state != 'draft' "
+                            class="btn primary" invisible="state != 'request_for_confirm' "
                             groups="ahadubit_property_reservation.access_property_admin_team"
                             />
 

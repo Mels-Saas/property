@@ -600,6 +600,11 @@ class PropertySale(models.Model):
         if self.partner_id.blacklisted:
             raise ValidationError(
                 _('The Customer %r is Blacklisted.', self.partner_id.name))
+        total_paid=0
+        for rec in self.payment_installment_line_ids:
+            total_paid+=rec.paid_amount
+        if total_paid<self.sale_price:
+            raise ValidationError("All Expected Payment on Current Sale Should Be Paid")
         self.state = 'confirm'
         self.property_id.state = 'sold'
         self.reservation_id.status = 'sold'
