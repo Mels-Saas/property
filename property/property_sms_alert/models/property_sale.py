@@ -80,24 +80,17 @@ class PropertySale(models.Model):
         a=mailing.action_put_in_queue()
         _logger.info("######################## a")
         _logger.info(a)
-        if a is not None:
-            msg = "SMS alert sent for the nearest upcoming payment installment."
-            msg_type = "success"
-        else:
-            msg = "Error, Please Check the Afro SMS Setting"
-            msg_type = "error"
-
+    
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': 'SMS Sent',
-                'message': msg,
-                'type': msg_type,
+                'message': "SMS alert sent for the nearest upcoming payment installment.",
+                'type': 'success',
                 'sticky': False,
             }
         }
-
 
 
 
