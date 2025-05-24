@@ -196,7 +196,7 @@ class Property(models.Model):
 
     sales_commission=fields.Float(string="Total Sales Commission",compute="_compute_commission")
 
-    finance_manager=fields.Many2one('res.users',string="Finance Manager")
+    finance_manager=fields.Many2one('res.partner',string="Finance Manager")
 
     @api.depends('commision_percent')
     def _compute_commission(self):
