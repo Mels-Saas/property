@@ -65,15 +65,7 @@ class CrmPhone(models.Model):
                     raise ValidationError("Invalid phone number format! Please enter a valid phone number.")
                 
     def create(self, vals):
-        partner_id = vals['partner_id']
-        phone = vals['phone']
-        clause = [('is_won', '!=', True), ('is_lost', '!=', True), ('is_expired', '!=', True),('phone_ids.phone', '=', phone)]
-        leads = self.env['crm.lead'].sudo().search(clause)
-        phone_ids = leads.mapped('phone_ids')
-        for phone_id in phone_ids:
-            added_phone_no = phone_id.phone 
-            if phone == added_phone_no:
-                raise ValidationError("This number is Already Registered, Phone number must be unique!")
+       
         res = super(CrmPhone, self).create(vals)
         return res
 
@@ -88,9 +80,9 @@ class CrmStageInherited(models.Model):
 class CrmResPartnerInherited(models.Model):
     _inherit = 'res.partner'
     phone_no = fields.Char(string='Phone')
-    phone_ids = fields.Many2many('crm.phone',
-                                 domain="[('create_uid', '=', uid)]",
-                                 string="Phone" )
+    # phone_ids = fields.Many2many('crm.phone',
+    #                              domain="[('create_uid', '=', uid)]",
+    #                              string="Phone" )
     is_expired = fields.Boolean(string="is Expired")
 
 
@@ -156,9 +148,9 @@ class CrmLeadInherited(models.Model):
     phone_no = fields.Char(string='Phone')
 
     phone_code = fields.Char(string='Code', compute="compute_phone_perfix")
-    phone_ids = fields.Many2many('crm.phone',
-                                 domain="[('create_uid', '=', 'abcd')]",
-                                 string="Phone",tracking=True,groupable=False)
+    # phone_ids = fields.Many2many('crm.phone',
+    #                              domain="[('create_uid', '=', 'abcd')]",
+    #                              string="Phone",tracking=True,groupable=False)
 
     name = fields.Char(string='Name', compute="compute_lead_name", required=False)
     site_ids = fields.Many2many('property.site', string="site", tracking=True)
@@ -177,20 +169,20 @@ class CrmLeadInherited(models.Model):
     )
     is_expired = fields.Boolean(string="is Expired")
     stage_name = fields.Char(related='stage_id.name', store=True)
-    customer_name = fields.Char(string='Customer',tracking=True)
+    # customer_name = fields.Char(string='Customer',tracking=True)
 
-    customer_2=fields.Char(string='Customer 2',tracking=True)
+    # customer_2=fields.Char(string='Customer 2',tracking=True)
 
-    @api.onchange("partner_id")
+    # @api.onchange("partner_id")
 
-    def create_customer_name(self):
-        for record in self:
-            record.customer_name=record.partner_id.name
+    # def create_customer_name(self):
+    #     for record in self:
+    #         record.customer_name=record.partner_id.name
 
     
     def save_record(self):
         vals = {
-            'customer_name': self.customer_name,
+            'customer_name': self.partner_id.name,
             'phone_no': self.phone_no,
             'country_id': self.country_id.id,
             'site_ids': self.site_ids,
@@ -200,17 +192,17 @@ class CrmLeadInherited(models.Model):
         else:
             self.create(vals)
         
-    def fields_get(self, allfields=None, attributes=None):
-        res = super().fields_get(allfields, attributes)
+    # def fields_get(self, allfields=None, attributes=None):
+    #     res = super().fields_get(allfields, attributes)
 
-        hide_list = ['phone_ids', 'phone_no']
-        for field in hide_list:
-            if res.get(field):
-                res[field]['searchable'] = False  # Prevent filtering
-                res[field]['sortable'] = False  # Prevent sorting
-                res[field]['groupable'] = False  # Ensure it is NOT available in "Group By"
+    #     hide_list = ['phone_ids', 'phone_no']
+    #     for field in hide_list:
+    #         if res.get(field):
+    #             res[field]['searchable'] = False  # Prevent filtering
+    #             res[field]['sortable'] = False  # Prevent sorting
+    #             res[field]['groupable'] = False  # Ensure it is NOT available in "Group By"
 
-        return res
+    #     return res
     def print_change_history(self):
         for record in self:
             tracking_values = self.env['mail.tracking.value'].search([
@@ -254,19 +246,19 @@ class CrmLeadInherited(models.Model):
             data = {
                 'datas': data_list,
                 'lead': self.name,
-                'customer': self.customer_name,
+                'customer': self.partner_id.name,
                 'sale_person': self.user_id.name,
             }
             return self.env.ref(
                 'ahadubit_crm.crm_lead_report_action_report').report_action(
                 self, data=data)
 
-    @api.depends('customer_name','site_ids')
+    @api.depends('partner_id','site_ids')
     def compute_lead_name(self):
         for rec in self:
             site_names = '-'.join([site.name for site in rec.site_ids])
-            if rec.customer_name:
-                rec.name= f'{rec.customer_name}-{site_names}'
+            if rec.partner_id.name:
+                rec.name= f'{rec.partner_id.name}-{site_names}'
             else:
                 rec.name ="New"
 
@@ -301,12 +293,7 @@ class CrmLeadInherited(models.Model):
                 lead.custom_action_set_expired()
 
 
-    @api.onchange('partner_id')
-    def get_default_customer_phone(self):
-        for rec in self:
-            rec.phone_ids=rec.partner_id.phone_ids
-            rec.phone_no=rec.partner_id.phone_no
-
+  
     @api.onchange('stage_id')
     def compute_is_reserved(self):
         for rec in self:
@@ -319,7 +306,7 @@ class CrmLeadInherited(models.Model):
         for rec in self:
             rec.reservation_count=self.env['property.reservation'].search_count([('crm_lead_id', '=', rec.id)])
 
-    @api.constrains('phone_no','phone_ids')
+    @api.constrains('phone_no')
     def _check_phone_number(self):
         phone_regex = r'^\+?\d{1,15}$'
         for record in self:
@@ -334,13 +321,7 @@ class CrmLeadInherited(models.Model):
 
 
 
-    @api.depends('phone_ids')
-    def compute_is_has_phone(self):
-        for rec in self:
-            if len(rec.phone_ids)>0:
-                rec.has_phone=True
-            else:
-                rec.has_phone = False
+ 
 
 
     @api.onchange('country_id')
@@ -373,11 +354,9 @@ class CrmLeadInherited(models.Model):
             'country_id': self.country_id.id,
           })
         
-        self.phone_ids = [(4, result.id)]
         self.phone_no = False
         self.country_id = self.env['res.country'].search([('phone_code', '=', 251)], limit=1)
 
-        self.partner_id.phone_ids=[(4, result.id)]
         self.partner_id.phone_no = False
         self.partner_id.country_id = False
 
@@ -448,15 +427,7 @@ class CrmLeadInherited(models.Model):
     #         if len(rec.phone_ids)==1 and rec.phone_ids[0].phone =='duplicated':
     #             raise ValidationError("phone is required")
 
-    def read(self, fields=None, load='_classic_read'):
-        leads = self.env['crm.lead'].search([('customer_name', '=', False)])
-        for lead in leads:
-            if lead.partner_id:
-                lead.customer_name=lead.partner_id.name
-            else:
-                lead.customer_name="False"
-            _logger.info(f"lead.phone_ids: {lead.phone_ids}")
-            _logger.info(f"lead.phone_ids LEN===: {len(lead.phone_ids)}")
+   
 
             # _logger.info(f"lead.phone_ids.phone: {lead.phone_ids.phone}")
 
@@ -464,7 +435,7 @@ class CrmLeadInherited(models.Model):
         return super(CrmLeadInherited, self).read(fields=fields, load=load)
 
     def validate_phone(self, phone):
-        leads = self.env['crm.lead'].search([('id', '!=', self.id),('is_won', '!=', True), ('is_lost', '!=', True),('phone_ids.phone', '=', phone),('is_expired', '!=', True)])
+        leads = self.env['crm.lead'].search([('id', '!=', self.id),('is_won', '!=', True), ('is_lost', '!=', True),('phone', '=', phone),('is_expired', '!=', True)])
         if leads:
             raise ValidationError("This number is Already Registered, Phone number must be unique!")
     

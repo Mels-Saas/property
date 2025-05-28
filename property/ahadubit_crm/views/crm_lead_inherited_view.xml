@@ -20,7 +20,6 @@
                     <field name="is_lost" invisible="1"/>
                     <field name="is_expire_stage" invisible="1"/>
                     <field name="site_ids" widget="many2many_tags" readonly="is_reserved == True or is_lost == True or is_expire_stage == True"/>
-                    <field name="customer_name" invisible="type == 'lead'" readonly="is_reserved == True or is_lost == True or is_expire_stage == True"/>
                 </xpath>
             </field>
         </record>
@@ -118,12 +117,8 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='email_from']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//page[@name='lead']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
+           
+           
             <xpath expr="//page[@name='internal_notes']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -146,63 +141,10 @@
             <xpath expr="//span[@class='oe_grey p-2' and text()=' %']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='date_deadline']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='priority']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='tag_ids']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='phone']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
+            
+          
 
-            <xpath expr="//field[@name='user_id']" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </xpath>
-            <xpath expr="//label[@for='phone']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='email_from']" position="attributes">
-                <attribute name="readonly">is_reserved==True or is_lost==True or is_expire_stage == True</attribute>
-            </xpath>
-
-            <xpath expr="//group[@name='opportunity_partner']//field[@name='partner_id']" position="attributes">
-                <attribute name="readonly">is_reserved == True or is_lost == True or is_expire_stage == True</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='partner_name']" position="attributes">
-                <attribute name="readonly">is_reserved==True or is_lost==True or is_expire_stage == True</attribute>
-            </xpath>
-             <xpath expr="//group[@name='opportunity_partner']//field[@name='partner_id']" position="attributes">
-                  <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//label[@for='phone']" position="before">
-                 <field name="customer_name" readonly="is_reserved == True or is_lost == True or is_expire_stage == True"/>
-                  <field name="customer_2" readonly="is_reserved == True or is_lost == True or is_expire_stage == True"/>
-            </xpath>
-
-             <xpath expr="//label[@for='phone']" position="after">
-                <field name="has_phone"  invisible="1"/>
-                <label for="phone_ids" string="" invisible="is_creator == True or has_phone != True"/>
-                 <div class="address_format">
-                   <field name="phone_ids" string="Phone List"  options="{'no_create': True}"  widget="many2many_tags"  invisible="is_creator == True or has_phone != True" readonly="is_reserved==True or is_lost==True or is_expire_stage == True"/>
-                 </div>
-            </xpath>
-            <xpath expr="//label[@for='phone']" position="after">
-
-               <label for="phone" string="Phone" invisible="is_creator == True"/>
-                <div class="address_format" invisible="is_creator == True">
-                     <field name="country_id" style="width: 35%" options='{"no_open": True}' readonly="is_reserved==True or is_lost==True or is_expire_stage == True"/>
-                     <field name="phone_code" style="width: 10%;" />
-                     <field name="phone_no" style="width: 35%; margin: 1%;" readonly="is_reserved==True or is_lost==True or is_expire_stage == True"/>
-                     <!-- <button name="add_more_phone_list" type="object" string="Add" class="btn-primary" style="width: 18%; margin: 1%;" invisible="is_reserved==True or is_lost==True or is_expire_stage == True"/> -->
-                </div>
-            </xpath>
-
+    
             <xpath expr="//field[@name='user_id']" position="after">
                    
                 <field name="is_creator" invisible="1"/>
@@ -245,8 +187,7 @@
             </xpath>
             <xpath expr="//field[@name='phone']" position="after">
                 <field name="is_creator" invisible="1"/>
-                <field name="customer_name"/>
-                 <field name="customer_2"/>
+     
                 <field name="site_ids" widget="many2many_tags"/>
                 <field name="source_id" widget="selection" options="{'no_create': True}"/>
                 <label for="phone" string="Phone" invisible="is_creator == True"/>
@@ -272,13 +213,8 @@
                 <attribute name="column_invisible">1</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='contact_name']" position="attributes">
-                <attribute name="column_invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='contact_name']" position="after">
-                <field name="customer_name"/>
-                 <field name="customer_2"/>
-            </xpath>
+        
+            
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="column_invisible">1</attribute>
             </xpath>
@@ -385,9 +321,7 @@
             <field name="name" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <field name="partner_id" position="after">
-                    <field name="phone_ids" string="Phones" widget="many2many_tags"/>
-            </field>
+      
             <field name="tag_ids" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>

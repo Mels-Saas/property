@@ -119,7 +119,7 @@ class PropertyController(Controller):
                 data.append({
                     "id": prop.id,
                     "name": prop.name,
-                    "customer": prop.customer_name,
+                    "customer": prop.partner_id.name,
                     "reservation_count": prop.reservation_count,
                     "stage": {"id": prop.stage_id.id, "name": prop.stage_id.name} if prop.stage_id else None,
                 })
@@ -165,11 +165,11 @@ class PropertyController(Controller):
                     data = {
                         "id": lead.id,
                         "name": lead.name,
-                        "customer": lead.customer_name,
+                        "customer": lead.partner_id.name,
                         "source_id": lead.source_id.name if lead.source_id else None,
                         "user_id": lead.user_id.name if lead.user_id else None,
                         "site_ids": [{"id": site.id, "name": site.name} for site in lead.site_ids],
-                        "phone": [{"id": phone.id, "phone": phone.phone} for phone in lead.phone_ids],
+                        "phone": [{"id": phone.id, "phone": phone.phone} for phone in lead.phone],
                         "stage": {"id": lead.stage_id.id, "name": lead.stage_id.name} if lead.stage_id else None,
                         "reservation_count": lead.reservation_count,
                     }
