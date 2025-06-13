@@ -7,7 +7,7 @@ class AfroMessage(models.AbstractModel):
     _name = 'afro.message'
     _description = 'AfroMessage SMS Service'
     
-    BASE_URL = "https://api.afromessage.com/api/send"
+    BASE_URL = "https://api.afromessage.com/api/bulk_send"
 
     def _get_config(self):
         """Get AfroMessage configuration parameters"""
@@ -42,9 +42,21 @@ class AfroMessage(models.AbstractModel):
             payload["callback"] = callback_url
 
         try:
-            response = requests.post(self.BASE_URL, json=payload, headers=headers)
-            response.raise_for_status()
-            _logger.info("SMS AFRO SENT")
+            import urllib.parse
+            params = {
+                "from": config["identifier_id"],
+                "to": phone_number,
+                "message": message,
+                "sender": config["sender_name"],
+                "callback": callback_url
+            }
+            response = requests.Session().post(self.BASE_URL, json=params, headers=headers)
+            if response.status_code == 200:
+
+                _logger.info("SMS AFRO SENT")
+                resp_json = response.json()
+                if resp_json['acknowledge'] == 'success':
+                    return "done"
             _logger.info(f"SMS {response.json()}")
             
             return response.json()
@@ -52,14 +64,14 @@ class AfroMessage(models.AbstractModel):
             _logger.error(f"Failed to send SMS: {str(e)}")
             raise UserError("Failed to send SMS. Please check the configuration and try again.")
 
-def send_sms(phone_number, message, token, callback_url=None):
-    try:
-        phone_number="0961386082"
-        message="test message"
-        callback_url="http://localhost:8000/afro_message/"
-        response = AfroMessage.send_sms(phone_number, message, callback_url)
-        print('api success')
-        return response
-    except Exception as e:
-        print('api error')
-        raise e
+# def send_sms(phone_number, message, token, callback_url=None):
+#     try:
+#         phone_number="0961386082"
+#         message="test message"
+#         callback_url="http://localhost:8000/afro_message/"
+#         response = AfroMessage.send_sms(phone_number, message, callback_url)
+#         print('api success')
+#         return response
+#     except Exception as e:
+#         print('api error')
+#         raise e

@@ -19,12 +19,14 @@ services:
       - db
     ports:
       - "8069:8069"
+      - "8072:8072"
     environment:
       - HOST=db
       - USER=odoo
       - PASSWORD=odoo
     volumes:
       - ./property:/mnt/extra-addons
+      - ./property/theme:/mnt/extra-addons/theme
       - ./etc/odoo.conf:/etc/odoo/odoo.conf
     restart: unless-stopped
 

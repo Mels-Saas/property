@@ -51,5 +51,6 @@
     <menuitem id="menu_afromessage_config" 
               name="SMS Settings" 
               action="action_afromessage_configuration" 
+              parent="mass_mailing_sms.mass_mailing_sms_menu_configuration"
               sequence="100"/>
 </odoo>
