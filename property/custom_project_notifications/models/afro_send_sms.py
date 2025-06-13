@@ -8,7 +8,7 @@ class AfroMessage(models.AbstractModel):
     _description = 'AfroMessage SMS Service'
     
     BASE_URL = "https://api.afromessage.com/api/bulk_send"
-
+    BASE_URL_SINGLE = "https://api.afromessage.com/api/send"
     def _get_config(self):
         """Get AfroMessage configuration parameters"""
         params = self.env['ir.config_parameter'].sudo()
@@ -50,14 +50,23 @@ class AfroMessage(models.AbstractModel):
                 "sender": config["sender_name"],
                 "callback": callback_url
             }
-            response = requests.Session().post(self.BASE_URL, json=params, headers=headers)
-            if response.status_code == 200:
+            if isinstance(phone_number,list):
+                response = requests.Session().post(self.BASE_URL, json=params, headers=headers)
+            else: 
+                response = requests.Session().post(self.BASE_URL_SINGLE, json=params, headers=headers)
 
-                _logger.info("SMS AFRO SENT")
-                resp_json = response.json()
-                if resp_json['acknowledge'] == 'success':
-                    return "done"
-            _logger.info(f"SMS {response.json()}")
+                if response.status_code == 200:
+
+                    _logger.info("SMS AFRO SENT")
+                    resp_json = response.json()
+                    if resp_json['acknowledge'] == 'success':
+                        return "done"
+                    else:
+                        _logger.info(f"Afro SMS {resp_json['acknowledge']}")
+                else:
+                    _logger.info(f"Afro SMS {response.status_code}")
+                _logger.info(f"SMS {response.json()}")
+            
             
             return response.json()
         except requests.exceptions.RequestException as e:

@@ -81,22 +81,4 @@ class SMSMarketing(models.Model):
 
 
     def action_reload(self):
-        _logger.info("SMS IN")
-        for record in self:
-            try:
-                domain = ast.literal_eval(record.mailing_domain)
-                contact_list_ids = self.env['res.partner'].search(domain)
-
-                body_plaintext = record.body_plaintext or "No message"
-
-                for contact in contact_list_ids:
-                    if contact.phone:
-                        _logger.info(f"Sending SMS to {contact.phone}")
-                        self.env['afro.message'].send_sms(
-                            phone_number=contact.phone,
-                            message=body_plaintext
-                        )
-                        _logger.info("SMS sent")
-                        self.sent_count +=1
-            except Exception as e:
-                _logger.exception(f"Failed to reload SMS: {e}")
+        self.action_put_in_queue()
